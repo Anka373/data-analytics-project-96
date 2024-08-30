@@ -22,4 +22,5 @@ left join leads as l on ld.visitor_id = l.visitor_id
 where s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
 order by
     l.amount desc nulls last, ld.visit_date asc,
-    utm_source asc, utm_medium asc, utm_campaign asc;
+    utm_source asc, utm_medium asc, utm_campaign asc
+limit 10;
