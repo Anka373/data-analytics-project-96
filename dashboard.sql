@@ -93,20 +93,61 @@ left join
 --конверсия в процентах
 with tab as (
     select
-        count(distinct s.visitor_id) as visitors_count,
-        count(l.lead_id) as leads_count,
-        sum(case when l.closing_reason = 'Успешная продажа' then 1 else 0 end)
-        as clients
+        s.visitor_id,
+        s.visit_date,
+        s.source as utm_source,
+        s.medium as utm_medium,
+        s.campaign as utm_campaign,
+        l.lead_id,
+        l.created_at,
+        l.amount,
+        l.closing_reason,
+        l.status_id,
+        row_number()
+            over (partition by s.visitor_id order by s.visit_date desc)
+        as rn
     from sessions as s
     left join
         leads as l
         on s.visitor_id = l.visitor_id and s.visit_date <= l.created_at
+    where s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
+),
+
+tab2 as (
+    select
+        visitor_id,
+        visit_date,
+        utm_source,
+        utm_medium,
+        utm_campaign,
+        lead_id,
+        created_at,
+        amount,
+        closing_reason,
+        status_id
+    from tab
+    where rn = 1
+    order by
+        amount desc nulls last,
+        visit_date asc,
+        utm_source asc,
+        utm_medium asc,
+        utm_campaign asc
+),
+
+tab3 as (
+    select
+        count(distinct t2.visitor_id) as visitors_count,
+        count(distinct t2.lead_id) as leads_count,
+        sum(case when t2.closing_reason = 'Успешная продажа' then 1 else 0 end)
+        as clients
+    from tab2 as t2
 )
 
 select
     round(leads_count * 100.0 / visitors_count, 2) as first_conversion,
     round(clients * 100.0 / leads_count, 2) as second_conversion
-from tab;
+from tab3;
 
 --траты на рекламу
 with vk as (
