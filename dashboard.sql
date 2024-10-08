@@ -337,7 +337,7 @@ tab3 as (
         utm_campaign,
         sum(daily_spent) as total_cost
     from ad_total_spent
-    group by  visit_date, utm_source, utm_medium, utm_campaign
+    group by visit_date, utm_source, utm_medium, utm_campaign
 ),
 
 tab4 as (
@@ -504,7 +504,7 @@ tab5 as (
         sum(coalesce(total_cost, 0)) as total_cost
     from tab4
     where utm_source = 'vk'
-    group by  utm_source, utm_medium, utm_campaign
+    group by utm_source, utm_medium, utm_campaign
 )
 
 select
