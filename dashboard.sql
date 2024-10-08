@@ -148,7 +148,7 @@ with tab as (
         l.closing_reason,
         l.status_id,
         row_number()
-            over (partition by s.visitor_id order by s.visit_date desc)
+        over (partition by s.visitor_id order by s.visit_date desc)
         as rn
     from sessions as s
     left join
@@ -287,7 +287,7 @@ with tab as (
         l.status_id,
         s.source as utm_source,
         row_number()
-            over (partition by s.visitor_id order by s.visit_date desc)
+        over (partition by s.visitor_id order by s.visit_date desc)
         as rn
     from sessions as s
     left join
@@ -308,7 +308,7 @@ tab2 as (
         sum(amount) as revenue
     from tab
     where rn = 1
-    group by 1, 2, 3, 4
+    group by utm_source, utm_medium, utm_campaign, visit_date
 ),
 
 ad_total_spent as (
