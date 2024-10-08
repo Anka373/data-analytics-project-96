@@ -14,7 +14,7 @@ from leads;
 select count(visitor_id) as leads_count
 from leads
 where closing_reason = 'Успешная продажа';
-  
+
 --посещаемость по дням
 with tab as (
     select
@@ -45,7 +45,7 @@ with tab as (
         l.closing_reason,
         l.status_id,
         row_number()
-            over (partition by s.visitor_id order by s.visit_date desc)
+        over (partition by s.visitor_id order by s.visit_date desc)
         as rn
     from sessions as s
     left join
