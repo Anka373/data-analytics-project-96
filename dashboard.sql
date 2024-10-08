@@ -337,7 +337,7 @@ tab3 as (
         utm_campaign,
         sum(daily_spent) as total_cost
     from ad_total_spent
-    group by 1, 2, 3, 4
+    group by  visit_date, utm_source, utm_medium, utm_campaign
 ),
 
 tab4 as (
@@ -378,7 +378,7 @@ tab5 as (
         sum(coalesce(total_cost, 0)) as total_cost
     from tab4
     where utm_source = 'yandex'
-    group by 1, 2, 3
+    group by utm_source, utm_medium, utm_campaign
 )
 
 select
@@ -413,7 +413,7 @@ with tab as (
         l.status_id,
         s.source as utm_source,
         row_number()
-            over (partition by s.visitor_id order by s.visit_date desc)
+        over (partition by s.visitor_id order by s.visit_date desc)
         as rn
     from sessions as s
     left join
@@ -434,7 +434,7 @@ tab2 as (
         sum(amount) as revenue
     from tab
     where rn = 1
-    group by 1, 2, 3, 4
+    group by utm_source, utm_medium, utm_campaign, visit_date
 ),
 
 ad_total_spent as (
@@ -463,7 +463,7 @@ tab3 as (
         utm_campaign,
         sum(daily_spent) as total_cost
     from ad_total_spent
-    group by 1, 2, 3, 4
+    group by visit_date, utm_source, utm_medium, utm_campaign
 ),
 
 tab4 as (
@@ -504,7 +504,7 @@ tab5 as (
         sum(coalesce(total_cost, 0)) as total_cost
     from tab4
     where utm_source = 'vk'
-    group by 1, 2, 3
+    group by  utm_source, utm_medium, utm_campaign
 )
 
 select
