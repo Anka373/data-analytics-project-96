@@ -98,7 +98,7 @@ select
     count(source) as source_count
 from sessions
 group by 1, 2
-order by 
+order by
     2
 
 /*--количество посетителей, лидов и покупателей
