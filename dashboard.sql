@@ -86,8 +86,6 @@ group by 2, 1
 order by 2 asc, 3 desc;
 
 --количество посетителей, лидов и покупателей
-    --код работает, но линтер начал выводить ошибку,
-    --как-будто из-за сочетания sum и case
 select
     'total' as category,
     count(s.visitor_id) as visitors_count,
