@@ -85,30 +85,14 @@ from sessions
 group by 2, 1
 order by 2 asc, 3 desc;
 
---второй вариант
-select
-    source,
-    case
-        when date(visit_date) between '2023-06-01' and '2023-06-04' then 1
-        when date(visit_date) between '2023-06-05' and '2023-06-11' then 2
-        when date(visit_date) between '2023-06-12' and '2023-06-18' then 3
-        when date(visit_date) between '2023-06-19' and '2023-06-25' then 4
-        when date(visit_date) between '2023-06-26' and '2023-06-30' then 5
-    end as visit_date,
-    count(source) as source_count
-from sessions
-group by 1, 2
-order by
-    2
-
 --количество посетителей, лидов и покупателей
     --код работает, но линтер начал выводить ошибку,
-    как-будто из-за сочетания sum и case
+    --как-будто из-за сочетания sum и case
 select
     'total' as category,
     count(s.visitor_id) as visitors_count,
     count(l.lead_id) as leads_count,
-    sum(case when l.closing_reason = 'Успешная продажа' then 1 else 0 end)
+    count(l.closing_reason) filter (where l.closing_reason = 'Успешная продажа')
     as clients
 from sessions as s
 left join
@@ -252,7 +236,7 @@ select
 from spending as s
 inner join total_amount as a on s.source = a.source;
 
---ключевые метрики яндекса
+--ключевые метрики
 with tab as (
     select
         s.visitor_id,
@@ -342,7 +326,8 @@ tab5 as (
         sum(coalesce(revenue, 0)) as revenue,
         sum(coalesce(total_cost, 0)) as total_cost
     from tab4
-    where utm_source = 'yandex'
+    where utm_source in ('yandex', 'vk')
+    group by 1
 )
 
 select
