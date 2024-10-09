@@ -43,7 +43,7 @@ with tab as (
     left join
         leads as l
         on s.visitor_id = l.visitor_id and s.visit_date <= l.created_at
-    where s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
+    where s.medium != 'organic'
 ),
 
 tab2 as (
@@ -131,7 +131,7 @@ with tab as (
     left join
         leads as l
         on s.visitor_id = l.visitor_id and s.visit_date <= l.created_at
-    where s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
+    where s.medium != 'organic'
 ),
 
 tab2 as (
@@ -270,7 +270,7 @@ with tab as (
     left join
         leads as l
         on s.visitor_id = l.visitor_id and s.visit_date <= l.created_at
-    where s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
+    where s.medium != 'organic'
 ),
 
 tab2 as (
@@ -395,7 +395,7 @@ tab2 as (
         sum(amount) as revenue
     from tab
     where rn = 1
-    group by utm_source, utm_medium, utm_campaign, visit_date
+    group by utm_source, visit_date
 ),
 
 ad_total_spent as (
@@ -418,7 +418,7 @@ tab3 as (
         utm_source,
         sum(daily_spent) as total_cost
     from ad_total_spent
-    group by visit_date, utm_source
+    group by 1, 2
 ),
 
 tab4 as (
@@ -453,7 +453,7 @@ tab5 as (
         sum(coalesce(total_cost, 0)) as total_cost
     from tab4
     where utm_source = 'vk'
-    group by utm_source
+    group by 1
 )
 
 select
@@ -471,5 +471,4 @@ select
         * 100.0
         / (case when total_cost = 0 then 1 else total_cost end)
     ) as roi
-from tab5
-order by roi desc;
+from tab5;
