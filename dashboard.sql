@@ -37,7 +37,7 @@ with tab as (
         l.status_id,
         date(s.visit_date) as visit_date,
         row_number()
-            over (partition by s.visitor_id order by s.visit_date desc)
+        over (partition by s.visitor_id order by s.visit_date desc)
         as rn
     from sessions as s
     left join
@@ -61,11 +61,11 @@ tab2 as (
     from tab
     where rn = 1
     order by
-        amount desc nulls last,
-        visit_date asc,
-        utm_source asc,
-        utm_medium asc,
-        utm_campaign asc
+        8 desc nulls last,
+        2 asc,
+        3 asc,
+        4 asc,
+        5 asc
 )
 
 select
@@ -73,8 +73,8 @@ select
     utm_source,
     count(utm_source) as source_count
 from tab2
-group by visit_date, utm_source
-order by visit_date asc, source_count desc;
+group by 1, 2
+order by 1 asc, 3 desc;
 
 -- каналы, приводящие пользователей (по неделям)
 select
@@ -82,8 +82,8 @@ select
     to_char(date_trunc('week', visit_date), 'W') as visit_week,
     count(source) as source_count
 from sessions
-group by visit_week, source
-order by visit_week asc, source_count desc;
+group by 2, 1
+order by 2 asc, 3 desc;
 
 --второй вариант
 select
@@ -102,7 +102,7 @@ order by 2
 
 --количество посетителей, лидов и покупателей
 select
-    count(distinct s.visitor_id) as visitors_count,
+    count(distinct on s.visitor_id) as visitors_count,
     count(l.lead_id) as leads_count,
     sum(case when l.closing_reason = 'Успешная продажа' then 1 else 0 end)
     as clients
@@ -149,11 +149,11 @@ tab2 as (
     from tab
     where rn = 1
     order by
-        amount desc nulls last,
-        visit_date asc,
-        utm_source asc,
-        utm_medium asc,
-        utm_campaign asc
+        8 desc nulls last,
+        2 asc,
+        3 asc,
+        4 asc,
+        5 asc
 ),
 
 tab3 as (
@@ -176,7 +176,6 @@ with vk as (
         daily_spent,
         date(campaign_date) as pay_day
     from vk_ads
-    order by pay_day
 ),
 
 ya as (
@@ -184,7 +183,6 @@ ya as (
         daily_spent,
         date(campaign_date) as pay_day
     from ya_ads
-    order by pay_day
 )
 
 select
@@ -192,15 +190,15 @@ select
     pay_day,
     sum(daily_spent) as spend
 from vk
-group by source, pay_day
+group by 1, 2
 union all
 select
     'ya' as source,
     pay_day,
     sum(daily_spent) as spend
 from ya
-group by source, pay_day
-order by source, pay_day;
+group by 1, 2
+order by 1, 2;
 
 --затраты на рекламу по каждому каналу
 select
@@ -264,7 +262,7 @@ with tab as (
         l.status_id,
         s.source as utm_source,
         row_number()
-            over (partition by s.visitor_id order by s.visit_date desc)
+        over (partition by s.visitor_id order by s.visit_date desc)
         as rn
     from sessions as s
     left join
@@ -283,7 +281,7 @@ tab2 as (
         sum(amount) as revenue
     from tab
     where rn = 1
-    group by utm_source, utm_medium, utm_campaign, visit_date
+    group by 1, 2
 ),
 
 ad_total_spent as (
@@ -306,7 +304,7 @@ tab3 as (
         utm_source,
         sum(daily_spent) as total_cost
     from ad_total_spent
-    group by visit_date, utm_source
+    group by 1, 2
 ),
 
 tab4 as (
@@ -341,7 +339,6 @@ tab5 as (
         sum(coalesce(total_cost, 0)) as total_cost
     from tab4
     where utm_source = 'yandex'
-    group by utm_source
 )
 
 select
@@ -359,8 +356,7 @@ select
         * 100.0
         / (case when total_cost = 0 then 1 else total_cost end)
     ) as roi
-from tab5
-order by roi desc;
+from tab5;
 
 --ключевые метрики вк
 with tab as (
@@ -376,7 +372,7 @@ with tab as (
         l.status_id,
         s.source as utm_source,
         row_number()
-            over (partition by s.visitor_id order by s.visit_date desc)
+        over (partition by s.visitor_id order by s.visit_date desc)
         as rn
     from sessions as s
     left join
@@ -395,7 +391,7 @@ tab2 as (
         sum(amount) as revenue
     from tab
     where rn = 1
-    group by utm_source, visit_date
+    group by 1, 2
 ),
 
 ad_total_spent as (
