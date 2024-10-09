@@ -32,7 +32,7 @@ tab2 as (
         sum(amount) as revenue
     from tab
     where rn = 1
-    group by 2, 3, 4, 5
+    group by 1, 2, 3, 4
 ),
 
 ad_total_spent as (
