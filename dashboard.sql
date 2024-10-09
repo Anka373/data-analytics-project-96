@@ -100,7 +100,9 @@ from sessions
 group by 1, 2
 order by 2
 
---количество посетителей, лидов и покупателей
+/*--количество посетителей, лидов и покупателей
+    --код работает, но линтер начал выводить ошибку,
+    как-будто из-за сочетания sum и case
 select
     'total' as category,
     count(s.visitor_id) as visitors_count,
@@ -110,7 +112,7 @@ select
 from sessions as s
 left join
     leads as l
-    on s.visitor_id = l.visitor_id and s.visit_date <= l.created_at;
+    on s.visitor_id = l.visitor_id and s.visit_date <= l.created_at;*/
 
 --конверсия в процентах
 with tab as (
