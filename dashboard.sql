@@ -104,7 +104,7 @@ order by 2
 select
     'total' as category,
     count(s.visitor_id) as visitors_count,
-    count(l.lead_id) as leads_count
+    count(l.lead_id) as leads_count,
     sum(case when l.closing_reason = 'Успешная продажа' then 1 else 0 end)
     as clients
 from sessions as s
