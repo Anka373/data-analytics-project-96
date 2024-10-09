@@ -102,10 +102,10 @@ order by 2
 
 --количество посетителей, лидов и покупателей
 select
-    count(s.visitor_id) as visitors_count,
-    count(l.lead_id) as leads_count,
     sum(case when l.closing_reason = 'Успешная продажа' then 1 else 0 end)
-    as clients
+    as clients,
+    count(s.visitor_id) as visitors_count,
+    count(l.lead_id) as leads_count
 from sessions as s
 left join
     leads as l
