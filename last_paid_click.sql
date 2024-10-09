@@ -18,7 +18,7 @@ with tab as (
         on
             s.visitor_id = l.visitor_id and s.visit_date
             <= l.created_at
-    where s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
+    where s.medium != 'organic'
 )
 
 select
